@@ -1,14 +1,16 @@
 package co.com.pragma.crediya.r2dbc;
 
+import co.com.pragma.crediya.exception.UserNotFoundException;
 import co.com.pragma.crediya.model.usuario.Usuario;
 import co.com.pragma.crediya.model.usuario.gateways.UsuarioRepository;
 import co.com.pragma.crediya.r2dbc.entities.UsuarioEntity;
-import co.com.pragma.crediya.r2dbc.exception.UserNotFoundException;
 import co.com.pragma.crediya.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Repository
 public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
@@ -18,6 +20,8 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         MyReactiveRepository
 > implements UsuarioRepository
 {
+    private static final Logger log = LoggerFactory.getLogger(MyReactiveRepositoryAdapter.class);
+
     public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
         /**
          *  Could be use mapper.mapBuilder if your domain model implement builder pattern
@@ -29,7 +33,13 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Usuario> saveUser(Usuario user) {
-        return super.save(user);
+        return super.save(user)
+                .doOnError(error -> log.error("Error guardando usuario: {}", error.getMessage(), error));
+    }
+
+    @Override
+    public Mono<Usuario> findByCorreo(String correo) {
+        return repository.findByCorreoElectronico(correo);
     }
 
     @Override

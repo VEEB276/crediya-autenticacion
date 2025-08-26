@@ -15,12 +15,12 @@ public class Handler {
 
     private  final UsuarioUseCase usuarioUseCase;
 
-    public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {// useCase.logic();
+    public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(Usuario.class)
                 .flatMap(usuarioUseCase::saveUser)
                 .flatMap(savedUser -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUser)
-                );
+                ).onErrorResume(ErrorHandler::handleError);
     }
 }

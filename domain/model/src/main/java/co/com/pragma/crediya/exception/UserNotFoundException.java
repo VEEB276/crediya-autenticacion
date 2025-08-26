@@ -1,4 +1,4 @@
-package co.com.pragma.crediya.r2dbc.exception;
+package co.com.pragma.crediya.exception;
 
 public class UserNotFoundException extends RuntimeException {
 }
