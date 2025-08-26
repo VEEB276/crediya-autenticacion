@@ -40,6 +40,6 @@ public class UsuarioEntity {
     private String documentoIdentidad;
 
     @Column("rol_id")
-    private RolEntity rol;
+    private Long idRol;
 
 }

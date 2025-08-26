@@ -54,12 +54,11 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Usuario> editUser(Usuario user) {
-        return super.findById(user.getId())
+        return super.findById(user.getIdUsuario())
                 .flatMap(existingUser -> super.save(user))
                 .switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
-
-
+    
     @Override
     public Mono<Void> deleteUser(Long idNumber) {
         return repository.deleteById(idNumber);
