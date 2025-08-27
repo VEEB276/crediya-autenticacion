@@ -14,11 +14,11 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MyReactiveRepositoryAdapterTest {
-    // TODO: change four you own tests
 
     @InjectMocks
     MyReactiveRepositoryAdapter repositoryAdapter;
@@ -101,4 +101,61 @@ class MyReactiveRepositoryAdapterTest {
                 .expectNext(u)
                 .verifyComplete();
     }
+
+    @Test
+    void mustSaveUserSuccessfully() {
+        Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
+        UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
+
+        when(mapper.map(u, UsuarioEntity.class)).thenReturn(ue);
+        when(repository.save(ue)).thenReturn(Mono.just(ue));
+        when(mapper.map(ue, Usuario.class)).thenReturn(u);
+
+        Mono<Usuario> result = repositoryAdapter.saveUser(u);
+
+        StepVerifier.create(result)
+                .expectNext(u)
+                .verifyComplete();
+
+        verify(repository).save(ue);
+    }
+
+    @Test
+    void mustLogErrorWhenSaveUserFails() {
+        Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
+        UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
+
+        when(mapper.map(u, UsuarioEntity.class)).thenReturn(ue);
+        when(repository.save(ue)).thenReturn(Mono.error(new RuntimeException("DB error")));
+
+        Mono<Usuario> result = repositoryAdapter.saveUser(u);
+
+        StepVerifier.create(result)
+                .expectError(RuntimeException.class)
+                .verify();
+
+        verify(repository).save(ue);
+    }
+
+    @Test
+    void mustFindByCorreo() {
+        String correo = "john@example.com";
+        Usuario u = Usuario.builder()
+                .idUsuario(1L)
+                .nombre("John")
+                .apellido("Doe")
+                .correoElectronico(correo)
+                .build();
+
+        when(repository.findByCorreoElectronico(correo)).thenReturn(Mono.just(u));
+
+        Mono<Usuario> result = repositoryAdapter.findByCorreo(correo);
+
+        StepVerifier.create(result)
+                .expectNext(u)
+                .verifyComplete();
+
+        verify(repository).findByCorreoElectronico(correo);
+    }
+
 }
