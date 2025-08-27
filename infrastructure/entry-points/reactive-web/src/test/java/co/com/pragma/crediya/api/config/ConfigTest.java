@@ -2,11 +2,13 @@ package co.com.pragma.crediya.api.config;
 
 import co.com.pragma.crediya.api.Handler;
 import co.com.pragma.crediya.api.RouterRest;
+import co.com.pragma.crediya.usecase.usuario.UsuarioUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @ContextConfiguration(classes = {RouterRest.class, Handler.class})
@@ -17,10 +19,13 @@ class ConfigTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @MockitoBean
+    private UsuarioUseCase usuarioUseCase;
+
     @Test
     void corsConfigurationShouldAllowOrigins() {
-        webTestClient.get()
-                .uri("/api/usecase/path")
+        webTestClient.post()
+                .uri("/api/v1/usuarios")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("Content-Security-Policy",

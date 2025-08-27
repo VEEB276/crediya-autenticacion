@@ -1,12 +1,19 @@
 package co.com.pragma.crediya.api;
 
+import co.com.pragma.crediya.model.usuario.Usuario;
+import co.com.pragma.crediya.usecase.usuario.UsuarioUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
 
 @ContextConfiguration(classes = {RouterRest.class, Handler.class})
 @WebFluxTest
@@ -15,45 +22,27 @@ class RouterRestTest {
     @Autowired
     private WebTestClient webTestClient;
 
-    @Test
-    void testListenGETUseCase() {
-        webTestClient.get()
-                .uri("/api/usecase/path")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
-                        }
-                );
-    }
-
-    @Test
-    void testListenGETOtherUseCase() {
-        webTestClient.get()
-                .uri("/api/otherusercase/path")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
-                        }
-                );
-    }
+    @MockitoBean
+    private UsuarioUseCase usuarioUseCase;
 
     @Test
     void testListenPOSTUseCase() {
+        Usuario usuario = new Usuario("Valen", "Escobar", "valen@gmail.com", BigDecimal.valueOf(2000000));
+
+        Mockito.when(usuarioUseCase.saveUser(Mockito.any()))
+                .thenReturn(Mono.just(usuario));
+
         webTestClient.post()
-                .uri("/api/usecase/otherpath")
+                .uri("/api/v1/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue("")
+                .bodyValue(usuario)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class)
+                .expectBody(Usuario.class)
                 .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
+                            Assertions.assertThat(userResponse.getNombre()).isEqualTo("Valen");
+                            Assertions.assertThat(userResponse.getCorreoElectronico()).isEqualTo("valen@gmail.com");
                         }
                 );
     }

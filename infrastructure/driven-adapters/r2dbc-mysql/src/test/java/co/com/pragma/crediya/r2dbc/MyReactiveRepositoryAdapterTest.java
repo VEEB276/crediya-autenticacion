@@ -38,7 +38,7 @@ class MyReactiveRepositoryAdapterTest {
                 .apellido("Doe")
                 .build();
         Usuario u = Usuario.builder()
-                .id(id)
+                .idUsuario(id)
                 .nombre("John")
                 .apellido("Doe")
                 .build();
@@ -56,7 +56,7 @@ class MyReactiveRepositoryAdapterTest {
     @Test
     void mustFindAllValues() {
         UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
-        Usuario u = Usuario.builder().id(1L).nombre("John").apellido("Doe").build();
+        Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
 
         when(repository.findAll()).thenReturn(Flux.just(ue));
         when(mapper.map(ue, Usuario.class)).thenReturn(u);
@@ -73,7 +73,7 @@ class MyReactiveRepositoryAdapterTest {
         Usuario example = Usuario.builder().nombre("John").build();
         UsuarioEntity ueExample = UsuarioEntity.builder().nombre("John").build();
         UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
-        Usuario u = Usuario.builder().id(1L).nombre("John").apellido("Doe").build();
+        Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
 
         when(mapper.map(example, UsuarioEntity.class)).thenReturn(ueExample);
         when(repository.findAll(any(Example.class))).thenReturn(Flux.just(ue));
@@ -88,7 +88,7 @@ class MyReactiveRepositoryAdapterTest {
 
     @Test
     void mustSaveValue() {
-        Usuario u = Usuario.builder().id(1L).nombre("John").apellido("Doe").build();
+        Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
         UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
 
         when(mapper.map(u, UsuarioEntity.class)).thenReturn(ue);
