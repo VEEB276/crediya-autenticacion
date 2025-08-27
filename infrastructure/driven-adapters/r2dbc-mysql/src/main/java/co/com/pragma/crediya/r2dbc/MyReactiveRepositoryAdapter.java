@@ -31,13 +31,17 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Usuario> saveUser(Usuario user) {
+        log.info("Inicia guardado de usuario");
         return super.save(user)
+                .doOnSuccess(saved -> log.info("Usuario guardado exitosamente con id: {}", saved.getIdUsuario()))
                 .doOnError(error -> log.error("Error guardando usuario: {}", error.getMessage(), error));
     }
 
     @Override
     public Mono<Usuario> findByCorreo(String correo) {
-        return repository.findByCorreoElectronico(correo);
+        log.debug("Búsqueda de usuario por correo: {}", correo);
+        return repository.findByCorreoElectronico(correo)
+                .doOnError(error -> log.error("Error buscando usuario por correo {}: {}", correo, error.getMessage(), error));
     }
 
 }
