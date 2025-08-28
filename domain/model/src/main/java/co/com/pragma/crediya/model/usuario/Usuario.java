@@ -25,10 +25,4 @@ public class Usuario {
     private String documentoIdentidad;
     private Long idRol;
 
-    public Usuario(String nombre, String apellido, String mail, BigDecimal bigDecimal) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correoElectronico = mail;
-        this.salarioBase = bigDecimal;
-    }
 }

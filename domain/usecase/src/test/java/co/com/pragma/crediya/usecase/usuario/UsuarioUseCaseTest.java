@@ -22,8 +22,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_nombreNulo_lanzaValidationException() {
-        Usuario usuario = new Usuario(null, "Apellido", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000));
+    void saveUserNombreNulo() {
+        Usuario usuario = new Usuario(null, null, "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000), "123456", 1L);
 
         StepVerifier.create(usuarioUseCase.saveUser(usuario))
                 .expectErrorMessage("El nombre es obligatorio")
@@ -31,8 +32,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_apellidoNulo_lanzaValidationException() {
-        Usuario usuario = new Usuario("Valentina", null, "valentina.escobar@gmail.com", BigDecimal.valueOf(1000));
+    void saveUserApellidoNulo() {
+        Usuario usuario = new Usuario(null, "Valentina", null, "27-06-2001", "Calle 48 #27",
+                "312121212", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000), "123456", 1L);
 
         StepVerifier.create(usuarioUseCase.saveUser(usuario))
                 .expectErrorMessage("El apellido es obligatorio")
@@ -40,8 +42,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_correoNulo_lanzaValidationException() {
-        Usuario usuario = new Usuario("Valentina", "Escobar", null, BigDecimal.valueOf(1000));
+    void saveUserCorreoNulo() {
+        Usuario usuario = new Usuario(null, "Valentina", "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", null, BigDecimal.valueOf(1000), "123456", 1L);
 
         StepVerifier.create(usuarioUseCase.saveUser(usuario))
                 .expectErrorMessage("El correo electrónico es obligatorio")
@@ -49,8 +52,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_salarioNegativo_lanzaValidationException() {
-        Usuario usuario = new Usuario("Valentina", "Escobar", "valentina.escobar@gmail.com", BigDecimal.valueOf(-10));
+    void saveUserSalarioNegativo() {
+        Usuario usuario = new Usuario(null, "Valentina", "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", "valentina.escobar@gmail.com", BigDecimal.valueOf(-1000), "123456", 1L);
 
         StepVerifier.create(usuarioUseCase.saveUser(usuario))
                 .expectErrorMessage("El salario base debe estar entre 0 y 15'000.000")
@@ -58,8 +62,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_correoExistente_lanzaValidationException() {
-        Usuario usuario = new Usuario("Valentina", "Escobar", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000));
+    void saveUserCorreoExistente() {
+        Usuario usuario = new Usuario(null, "Valentina", "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000), "123456", 1L);
 
         Mockito.when(usuarioRepository.findByCorreo("valentina.escobar@gmail.com"))
                 .thenReturn(Mono.just(usuario));
@@ -73,8 +78,9 @@ class UsuarioUseCaseTest {
     }
 
     @Test
-    void saveUser_valido_guardaUsuario() {
-        Usuario usuario = new Usuario("Valentina", "Escobar", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000));
+    void saveUserValido() {
+        Usuario usuario = new Usuario(null, "Valentina", "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", "valentina.escobar@gmail.com", BigDecimal.valueOf(1000), "123456", 1L);
 
         Mockito.when(usuarioRepository.findByCorreo("valentina.escobar@gmail.com"))
                 .thenReturn(Mono.empty());

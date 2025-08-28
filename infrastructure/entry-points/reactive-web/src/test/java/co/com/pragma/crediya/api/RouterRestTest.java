@@ -27,7 +27,8 @@ class RouterRestTest {
 
     @Test
     void testListenPOSTUseCase() {
-        Usuario usuario = new Usuario("Valen", "Escobar", "valen@gmail.com", BigDecimal.valueOf(2000000));
+        Usuario usuario = new Usuario(null, "Valen", "Apellido", "27-06-2001", "Calle 48 #27",
+                "312121212", "valen@gmail.com", BigDecimal.valueOf(1000), "123456", 1L);
 
         Mockito.when(usuarioUseCase.saveUser(Mockito.any()))
                 .thenReturn(Mono.just(usuario));
