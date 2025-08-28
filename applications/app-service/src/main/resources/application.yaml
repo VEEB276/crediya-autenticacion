@@ -25,7 +25,7 @@ adapters:
   r2dbc:
     host: "localhost"
     port: 3306
-    database: "crediya"
+    database: "autenticacion"
     username: "root"
     password: "Vaesbu15951*"
 management:
