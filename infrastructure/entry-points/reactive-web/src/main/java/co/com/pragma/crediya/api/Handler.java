@@ -55,4 +55,21 @@ public class Handler {
                 .onErrorResume(ErrorHandler::handleError)
                 .doFinally(signal -> log.info("Fin de la petición para guardar usuario"));
     }
+
+    public Mono<ServerResponse> listenGetUserByDocument(ServerRequest request) {
+        log.info("Inicio de la petición para obtener usuario por documento");
+
+        String documento = request.pathVariable("documento");
+
+        return usuarioUseCase.findByDocument(documento)
+                .doOnNext(usuario -> log.info("Usuario encontrado: {}", usuario))
+                .flatMap(usuario -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(mapper.toResponse(usuario))
+                )
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .doOnError(e -> log.error("Error al obtener usuario por documento", e))
+                .onErrorResume(ErrorHandler::handleError)
+                .doFinally(signal -> log.info("Fin de la petición para obtener usuario por documento"));
+    }
 }

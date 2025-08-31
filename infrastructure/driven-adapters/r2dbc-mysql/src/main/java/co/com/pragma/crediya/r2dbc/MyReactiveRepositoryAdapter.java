@@ -44,4 +44,11 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 .doOnError(error -> log.error("Error buscando usuario por correo {}: {}", correo, error.getMessage(), error));
     }
 
+    @Override
+    public Mono<Usuario> findByDocumentoIdentidad(String documento) {
+        log.debug("Búsqueda de usuario por documento: {}", documento);
+        return repository.findByDocumentoIdentidad(documento)
+                .doOnError(error -> log.error("Error buscando usuario por documento {}: {}", documento, error.getMessage(), error));
+    }
+
 }

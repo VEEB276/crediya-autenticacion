@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import org.springdoc.core.annotations.RouterOperation;
@@ -34,5 +35,25 @@ public class RouterRest {
     )
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/usuarios"), handler::listenSaveUser);
+    }
+
+    @Bean
+    @RouterOperation(
+            path = "/api/v1/usuarios/{documento}",
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.GET,
+            beanClass = Handler.class,
+            beanMethod = "listenGetUserByDocumento",
+            operation = @Operation(
+                    operationId = "buscarUsuarioPorDocumento",
+                    description = "Busca un usuario por su documento",
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+                            @ApiResponse(responseCode = "404", description = "Usuario no existe")
+                    }
+            )
+    )
+    public RouterFunction<ServerResponse> getUserByDocument(Handler handler) {
+        return route(GET("/api/v1/usuarios/{documento}"), handler::listenGetUserByDocument);
     }
 }

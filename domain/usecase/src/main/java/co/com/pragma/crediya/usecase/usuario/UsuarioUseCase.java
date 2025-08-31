@@ -27,4 +27,9 @@ public class UsuarioUseCase {
                 .switchIfEmpty(usuarioRepository.saveUser(usuario));
     }
 
+    public Mono<Usuario> findByDocument(String documento) {
+        return usuarioRepository.findByDocumentoIdentidad(documento)
+                .switchIfEmpty(Mono.error(new ValidationException("No existe usuario con el documento ingresado")));
+    }
+
 }
