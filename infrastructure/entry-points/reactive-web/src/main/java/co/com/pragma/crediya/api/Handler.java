@@ -1,9 +1,12 @@
 package co.com.pragma.crediya.api;
 
 import co.com.pragma.crediya.api.dto.CreateUserDTO;
+import co.com.pragma.crediya.api.dto.LoginDTO;
+import co.com.pragma.crediya.api.dto.ResponseLoginDTO;
 import co.com.pragma.crediya.api.mapper.UserDtoMapper;
 import co.com.pragma.crediya.exception.ValidationException;
 import co.com.pragma.crediya.usecase.usuario.UsuarioUseCase;
+import co.com.pragma.crediya.usecase.usuario.login.LoginUseCase;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 public class Handler {
 
     private  final UsuarioUseCase usuarioUseCase;
+
+    private  final LoginUseCase loginUseCase;
 
     private final UserDtoMapper mapper;
 
@@ -71,5 +76,13 @@ public class Handler {
                 .doOnError(e -> log.error("Error al obtener usuario por documento", e))
                 .onErrorResume(ErrorHandler::handleError)
                 .doFinally(signal -> log.info("Fin de la petición para obtener usuario por documento"));
+    }
+
+    public Mono<ServerResponse> login(ServerRequest request) {
+
+        return request.bodyToMono(LoginDTO.class)
+                .flatMap(dto -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(loginUseCase.login(dto.correoElectronico(), dto.password()), ResponseLoginDTO.class));
     }
 }

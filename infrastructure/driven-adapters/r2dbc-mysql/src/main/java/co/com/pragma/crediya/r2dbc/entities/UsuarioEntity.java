@@ -39,6 +39,8 @@ public class UsuarioEntity {
     @Column("documento_identidad")
     private String documentoIdentidad;
 
+    private String password;
+
     @Column("rol_id")
     private Long idRol;
 

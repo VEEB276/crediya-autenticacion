@@ -30,5 +30,8 @@ public record CreateUserDTO(
 
         String documentoIdentidad,
 
+        @NotBlank(message = "La contraseña es requerida")
+        String password,
+
         Long idRol
 ) {}
