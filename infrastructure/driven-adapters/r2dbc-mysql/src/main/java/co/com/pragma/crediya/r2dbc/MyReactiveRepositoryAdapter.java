@@ -1,0 +1,54 @@
+package co.com.pragma.crediya.r2dbc;
+
+import co.com.pragma.crediya.model.usuario.Usuario;
+import co.com.pragma.crediya.model.usuario.gateways.UsuarioRepository;
+import co.com.pragma.crediya.r2dbc.entities.UsuarioEntity;
+import co.com.pragma.crediya.r2dbc.helper.ReactiveAdapterOperations;
+import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Repository
+public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
+        Usuario,
+        UsuarioEntity,
+        Long,
+        MyReactiveRepository
+> implements UsuarioRepository
+{
+    private static final Logger log = LoggerFactory.getLogger(MyReactiveRepositoryAdapter.class);
+
+    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
+        /**
+         *  Could be use mapper.mapBuilder if your domain model implement builder pattern
+         *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
+         *  Or using mapper.map with the class of the object model
+         */
+        super(repository, mapper, d -> mapper.map(d, Usuario.class));
+    }
+
+    @Override
+    public Mono<Usuario> saveUser(Usuario user) {
+        log.info("Inicia guardado de usuario");
+        return super.save(user)
+                .doOnSuccess(saved -> log.info("Usuario guardado exitosamente con id: {}", saved.getIdUsuario()))
+                .doOnError(error -> log.error("Error guardando usuario: {}", error.getMessage(), error));
+    }
+
+    @Override
+    public Mono<Usuario> findByCorreo(String correo) {
+        log.debug("Búsqueda de usuario por correo: {}", correo);
+        return repository.findByCorreoElectronico(correo)
+                .doOnError(error -> log.error("Error buscando usuario por correo {}: {}", correo, error.getMessage(), error));
+    }
+
+    @Override
+    public Mono<Usuario> findByDocumentoIdentidad(String documento) {
+        log.debug("Búsqueda de usuario por documento: {}", documento);
+        return repository.findByDocumentoIdentidad(documento)
+                .doOnError(error -> log.error("Error buscando usuario por documento {}: {}", documento, error.getMessage(), error));
+    }
+
+}

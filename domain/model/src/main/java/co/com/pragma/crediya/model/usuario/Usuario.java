@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Builder(toBuilder = true)
 public class Usuario {
 
-    private Long id;
+    private Long idUsuario;
     private String nombre;
     private String apellido;
     private String fechaNacimiento;
@@ -23,6 +23,6 @@ public class Usuario {
     private String correoElectronico;
     private BigDecimal salarioBase;
     private String documentoIdentidad;
-    private BigDecimal idRol;
+    private Long idRol;
 
 }
