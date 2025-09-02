@@ -30,10 +30,10 @@ public class JwtProvider {
         LOGGER.info("JWT_EXPIRATION cargado: " + expiration);
     }
 
-    public String generateToken(Usuario usuario) {
+    public String generateToken(String email, String rol) {
         return Jwts.builder()
-                .subject(usuario.getCorreoElectronico())
-                .claim("roles", "ADMIN")
+                .subject(email)
+                .claim("roles", rol)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + expiration))
                 .signWith(getKey(secret))

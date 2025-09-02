@@ -1,5 +1,7 @@
 package co.com.pragma.crediya.r2dbc;
 
+import co.com.pragma.crediya.exception.BusinessException;
+import co.com.pragma.crediya.exception.ValidationException;
 import co.com.pragma.crediya.model.usuario.login.gateways.LoginGateway;
 import co.com.pragma.crediya.r2dbc.security.jwt.provider.JwtProvider;
 import org.slf4j.Logger;
@@ -14,11 +16,13 @@ public class LoginAdapter implements LoginGateway
     private static final Logger log = LoggerFactory.getLogger(LoginAdapter.class);
 
     private final MyReactiveRepository myReactiveRepository;
+    private final RolReactiveRepository rolReactiveRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public LoginAdapter(MyReactiveRepository myReactiveRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
+    public LoginAdapter(MyReactiveRepository myReactiveRepository, RolReactiveRepository rolReactiveRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
         this.myReactiveRepository = myReactiveRepository;
+        this.rolReactiveRepository = rolReactiveRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
     }
@@ -29,14 +33,20 @@ public class LoginAdapter implements LoginGateway
         log.info("Password ingresada (raw): {}", password);
 
         return myReactiveRepository.findByCorreoElectronico(email)
-                .doOnNext(userDocument -> log.info("Password guardada en DB (hash): {}", userDocument.getPassword()))
+                .switchIfEmpty(Mono.error(new ValidationException("Usuario no encontrado")))
                 .filter(userDocument -> {
                     boolean matches = passwordEncoder.matches(password, userDocument.getPassword());
                     log.info("Coincide contraseña? {}", matches);
                     return matches;
                 })
-                .map(jwtProvider::generateToken)
-                .switchIfEmpty(Mono.error(new Throwable("bad credentials")));
+                .flatMap(userDocument ->
+                        rolReactiveRepository.findById(userDocument.getIdRol())
+                                .map(rol -> {
+                                    log.info("Rol del usuario: {}", rol.getNombre());
+                                    return jwtProvider.generateToken(userDocument.getCorreoElectronico(), rol.getNombre());
+                                })
+                )
+                .switchIfEmpty(Mono.error(new BusinessException("bad credentials")));
     }
 
 }

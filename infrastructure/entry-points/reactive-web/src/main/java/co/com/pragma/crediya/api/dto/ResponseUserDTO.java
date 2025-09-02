@@ -12,5 +12,6 @@ public record ResponseUserDTO(
         String correoElectronico,
         BigDecimal salarioBase,
         String documentoIdentidad,
+        String password,
         Long idRol
 ) {}

@@ -83,6 +83,7 @@ public class Handler {
         return request.bodyToMono(LoginDTO.class)
                 .flatMap(dto -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(loginUseCase.login(dto.correoElectronico(), dto.password()), ResponseLoginDTO.class));
+                        .body(loginUseCase.login(dto.correoElectronico(), dto.password()), ResponseLoginDTO.class)
+                        .onErrorResume(ErrorHandler::handleError));
     }
 }

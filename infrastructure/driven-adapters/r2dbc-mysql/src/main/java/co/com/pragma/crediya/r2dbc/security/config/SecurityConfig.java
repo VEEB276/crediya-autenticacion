@@ -4,6 +4,7 @@ import co.com.pragma.crediya.r2dbc.security.jwt.filter.JwtFilter;
 import co.com.pragma.crediya.r2dbc.security.repository.SecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,7 +30,8 @@ public class SecurityConfig {
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, JwtFilter jwtFilter) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchangeSpec -> exchangeSpec.pathMatchers("/api/v1/usuarios/login").permitAll()
+                .authorizeExchange(exchangeSpec -> exchangeSpec.pathMatchers(HttpMethod.POST, "/api/v1/usuarios/login").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/v1/usuarios").hasAnyRole("ADMIN", "ASESOR")
                         .anyExchange().authenticated())
                 .addFilterAfter(jwtFilter, SecurityWebFiltersOrder.FIRST)
                 .securityContextRepository(securityContextRepository)

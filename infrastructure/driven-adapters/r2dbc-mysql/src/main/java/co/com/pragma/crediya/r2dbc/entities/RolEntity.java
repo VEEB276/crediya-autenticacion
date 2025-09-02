@@ -15,7 +15,7 @@ public class RolEntity {
 
     @Id
     @Column("rol_id")
-    private Long idRol;
+    private Long id;
 
     private String nombre;
 
