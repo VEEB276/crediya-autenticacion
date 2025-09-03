@@ -5,6 +5,7 @@ import co.com.pragma.crediya.api.dto.LoginDTO;
 import co.com.pragma.crediya.api.dto.ResponseLoginDTO;
 import co.com.pragma.crediya.api.mapper.UserDtoMapper;
 import co.com.pragma.crediya.exception.ValidationException;
+import co.com.pragma.crediya.model.usuario.Usuario;
 import co.com.pragma.crediya.usecase.usuario.UsuarioUseCase;
 import co.com.pragma.crediya.usecase.usuario.login.LoginUseCase;
 import jakarta.validation.ConstraintViolation;
@@ -76,6 +77,24 @@ public class Handler {
                 .doOnError(e -> log.error("Error al obtener usuario por documento", e))
                 .onErrorResume(ErrorHandler::handleError)
                 .doFinally(signal -> log.info("Fin de la petición para obtener usuario por documento"));
+    }
+
+    public Mono<ServerResponse> listenGetUserDocumentByEmail(ServerRequest request) {
+        log.info("Inicio de la petición para obtener documento por correo");
+
+        String correo = request.pathVariable("correo");
+
+        return usuarioUseCase.findByEmail(correo)
+                .doOnNext(usuario -> log.info("Usuario encontrado: {}", usuario))
+                .map(Usuario::getDocumentoIdentidad)
+                .flatMap(documento -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(documento)
+                )
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .doOnError(e -> log.error("Error al obtener documento por correo", e))
+                .onErrorResume(ErrorHandler::handleError)
+                .doFinally(signal -> log.info("Fin de la petición para obtener documento por correo"));
     }
 
     public Mono<ServerResponse> login(ServerRequest request) {
