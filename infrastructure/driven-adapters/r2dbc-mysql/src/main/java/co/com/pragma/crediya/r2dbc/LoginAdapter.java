@@ -1,7 +1,6 @@
 package co.com.pragma.crediya.r2dbc;
 
-import co.com.pragma.crediya.exception.BusinessException;
-import co.com.pragma.crediya.exception.ValidationException;
+import co.com.pragma.crediya.exception.InvalidCredentialsException;
 import co.com.pragma.crediya.model.usuario.login.gateways.LoginGateway;
 import co.com.pragma.crediya.r2dbc.security.jwt.provider.JwtProvider;
 import org.slf4j.Logger;
@@ -29,11 +28,10 @@ public class LoginAdapter implements LoginGateway
 
     @Override
     public Mono<String> login(String email, String password) {
-        log.info("Intento de login para email: {}", email);
-        log.info("Password ingresada (raw): {}", password);
+        log.info("Inicio login");
 
         return myReactiveRepository.findByCorreoElectronico(email)
-                .switchIfEmpty(Mono.error(new ValidationException("Usuario no encontrado")))
+                .switchIfEmpty(Mono.error(new InvalidCredentialsException("El correo no se encuentra registrado")))
                 .filter(userDocument -> {
                     boolean matches = passwordEncoder.matches(password, userDocument.getPassword());
                     log.info("Coincide contraseña? {}", matches);
@@ -46,7 +44,7 @@ public class LoginAdapter implements LoginGateway
                                     return jwtProvider.generateToken(userDocument.getCorreoElectronico(), rol.getNombre());
                                 })
                 )
-                .switchIfEmpty(Mono.error(new BusinessException("bad credentials")));
+                .switchIfEmpty(Mono.error(new InvalidCredentialsException("Credenciales incorrectas")));
     }
 
 }

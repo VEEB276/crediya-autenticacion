@@ -1,6 +1,5 @@
 package co.com.pragma.crediya.usecase.usuario.login;
 
-import co.com.pragma.crediya.model.usuario.login.Login;
 import co.com.pragma.crediya.model.usuario.login.gateways.LoginGateway;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;

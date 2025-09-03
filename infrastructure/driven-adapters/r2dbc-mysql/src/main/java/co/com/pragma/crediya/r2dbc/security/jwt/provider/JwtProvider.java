@@ -1,13 +1,10 @@
 package co.com.pragma.crediya.r2dbc.security.jwt.provider;
 
-import co.com.pragma.crediya.model.usuario.Usuario;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -23,12 +20,6 @@ public class JwtProvider {
     private String secret;
     @Value("${jwt.expiration}")
     private Integer expiration;
-
-    @PostConstruct
-    public void init() {
-        LOGGER.info("JWT_SECRET cargado: " + secret);
-        LOGGER.info("JWT_EXPIRATION cargado: " + expiration);
-    }
 
     public String generateToken(String email, String rol) {
         return Jwts.builder()

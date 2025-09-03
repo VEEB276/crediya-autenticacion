@@ -28,7 +28,7 @@ public class JwtFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        if (path.contains("login")) {
+        if (path.contains("login") || path.contains("documento")) {
             return chain.filter(exchange); // login no requiere token
         }
 

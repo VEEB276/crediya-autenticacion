@@ -1,6 +1,7 @@
 package co.com.pragma.crediya.api;
 
 import co.com.pragma.crediya.exception.BusinessException;
+import co.com.pragma.crediya.exception.InvalidCredentialsException;
 import co.com.pragma.crediya.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class ErrorHandler {
         if (error instanceof BusinessException) {
             return ServerResponse.status(HttpStatus.CONFLICT)
                     .bodyValue(new ErrorResponse(409, error.getMessage(), null, LocalDateTime.now()));
+        }
+        if (error instanceof InvalidCredentialsException) {
+            return ServerResponse.status(HttpStatus.UNAUTHORIZED)
+                    .bodyValue(new ErrorResponse(401, error.getMessage(), null, LocalDateTime.now()));
         }
         return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .bodyValue(new ErrorResponse(500, "Error inesperado", null, LocalDateTime.now()));

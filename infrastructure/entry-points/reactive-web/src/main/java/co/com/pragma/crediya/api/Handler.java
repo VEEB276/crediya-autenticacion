@@ -81,9 +81,11 @@ public class Handler {
     public Mono<ServerResponse> login(ServerRequest request) {
 
         return request.bodyToMono(LoginDTO.class)
-                .flatMap(dto -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(loginUseCase.login(dto.correoElectronico(), dto.password()), ResponseLoginDTO.class)
-                        .onErrorResume(ErrorHandler::handleError));
+                .flatMap(dto -> loginUseCase.login(dto.correoElectronico(), dto.password())
+                        .flatMap(response -> ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(response))
+                )
+                .onErrorResume(ErrorHandler::handleError);
     }
 }

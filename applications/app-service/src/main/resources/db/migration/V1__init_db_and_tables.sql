@@ -29,3 +29,11 @@ CREATE TABLE IF NOT EXISTS `${db}`.`usuarios` (
 
 -- Helpful index for FK
 CREATE INDEX `idx_usuarios_rol_id` ON `${db}`.`usuarios` (`rol_id`);
+
+-- Insert sample data into roles
+INSERT INTO `${db}`.`roles`
+(`nombre`, `descripcion`)
+VALUES
+    ('ADMIN', 'Administradora'),
+    ('ASESOR', 'Asesora'),
+    ('CLIENTE', 'Cliente');
