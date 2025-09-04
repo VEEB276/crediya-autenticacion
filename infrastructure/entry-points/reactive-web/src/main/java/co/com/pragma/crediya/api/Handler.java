@@ -2,7 +2,6 @@ package co.com.pragma.crediya.api;
 
 import co.com.pragma.crediya.api.dto.CreateUserDTO;
 import co.com.pragma.crediya.api.dto.LoginDTO;
-import co.com.pragma.crediya.api.dto.ResponseLoginDTO;
 import co.com.pragma.crediya.api.mapper.UserDtoMapper;
 import co.com.pragma.crediya.exception.ValidationException;
 import co.com.pragma.crediya.model.usuario.Usuario;

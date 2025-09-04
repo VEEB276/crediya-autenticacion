@@ -1,6 +1,7 @@
 package co.com.pragma.crediya.r2dbc;
 
 import co.com.pragma.crediya.exception.InvalidCredentialsException;
+import co.com.pragma.crediya.model.usuario.login.Login;
 import co.com.pragma.crediya.model.usuario.login.gateways.LoginGateway;
 import co.com.pragma.crediya.security.jwt.provider.JwtProvider;
 import org.slf4j.Logger;
@@ -26,8 +27,7 @@ public class LoginAdapter implements LoginGateway
         this.jwtProvider = jwtProvider;
     }
 
-    @Override
-    public Mono<String> login(String email, String password) {
+    public Mono<Login> login(String email, String password) {
         log.info("Inicio login");
 
         return myReactiveRepository.findByCorreoElectronico(email)
@@ -41,7 +41,10 @@ public class LoginAdapter implements LoginGateway
                         rolReactiveRepository.findById(userDocument.getIdRol())
                                 .map(rol -> {
                                     log.info("Rol del usuario: {}", rol.getNombre());
-                                    return jwtProvider.generateToken(userDocument.getCorreoElectronico(), rol.getNombre());
+                                    return jwtProvider.generateToken(
+                                            userDocument.getCorreoElectronico(),
+                                            rol.getNombre()
+                                    );
                                 })
                 )
                 .switchIfEmpty(Mono.error(new InvalidCredentialsException("Credenciales incorrectas")));

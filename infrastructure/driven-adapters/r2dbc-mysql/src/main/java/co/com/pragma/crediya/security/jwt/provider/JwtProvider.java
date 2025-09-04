@@ -1,5 +1,6 @@
 package co.com.pragma.crediya.security.jwt.provider;
 
+import co.com.pragma.crediya.model.usuario.login.Login;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -21,14 +22,20 @@ public class JwtProvider {
     @Value("${jwt.expiration}")
     private Integer expiration;
 
-    public String generateToken(String email, String rol) {
-        return Jwts.builder()
+    public Login generateToken(String email, String rol) {
+        long now = System.currentTimeMillis();
+
+        String jwt = Jwts.builder()
                 .subject(email)
                 .claim("roles", rol)
-                .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime() + expiration))
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + expiration))
                 .signWith(getKey(secret))
                 .compact();
+
+        long expiresInMinutes = expiration / 1000 / 60;
+
+        return new Login(jwt, expiresInMinutes);
     }
 
     public Claims getClaims(String token) {
