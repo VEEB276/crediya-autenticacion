@@ -20,7 +20,6 @@ public class SecurityConfig {
         this.securityContextRepository = securityContextRepository;
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

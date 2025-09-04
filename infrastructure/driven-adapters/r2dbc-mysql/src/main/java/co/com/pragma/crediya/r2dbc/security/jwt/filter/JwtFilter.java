@@ -28,31 +28,33 @@ public class JwtFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        if (path.contains("login") || path.contains("documento") || path.contains("correo")) {
-            return chain.filter(exchange); // login no requiere token
+        if (path.startsWith("/api/v1/login")
+                || path.startsWith("/api/v1/usuarios/documento")
+                || path.startsWith("/api/v1/usuarios/correo")) {
+            return chain.filter(exchange); // no requiere token
         }
 
         String auth = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (auth == null) {
-            return Mono.error(new Throwable("no token was found"));
+            return Mono.error(new BusinessException("token no encontrado"));
         }
         if (!auth.startsWith("Bearer ")) {
-            return Mono.error(new Throwable("invalid auth"));
+            return Mono.error(new BusinessException("auth invalida"));
         }
 
         String token = auth.replace("Bearer ", "");
         if (!jwtProvider.validate(token)) {
-            return Mono.error(new BusinessException("invalid token"));
+            return Mono.error(new BusinessException("token invalido"));
         }
 
         String email = jwtProvider.getSubject(token);
         String role = (String) jwtProvider.getClaims(token).get("roles");
 
-        // Convertimos role a GrantedAuthority
+        // Se convierte role a GrantedAuthority
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
         Authentication authObj = new UsernamePasswordAuthenticationToken(email, null, authorities);
 
-        // Pasamos el auth al contexto de seguridad
+        // Se pasa el auth al contexto de seguridad
         return chain.filter(exchange)
                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authObj));
     }
