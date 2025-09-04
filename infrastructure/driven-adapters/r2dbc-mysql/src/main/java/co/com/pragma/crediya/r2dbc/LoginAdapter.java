@@ -2,7 +2,7 @@ package co.com.pragma.crediya.r2dbc;
 
 import co.com.pragma.crediya.exception.InvalidCredentialsException;
 import co.com.pragma.crediya.model.usuario.login.gateways.LoginGateway;
-import co.com.pragma.crediya.r2dbc.security.jwt.provider.JwtProvider;
+import co.com.pragma.crediya.security.jwt.provider.JwtProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
