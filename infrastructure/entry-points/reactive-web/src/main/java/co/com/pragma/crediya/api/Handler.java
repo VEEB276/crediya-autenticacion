@@ -78,22 +78,21 @@ public class Handler {
                 .doFinally(signal -> log.info("Fin de la petición para obtener usuario por documento"));
     }
 
-    public Mono<ServerResponse> listenGetUserDocumentByEmail(ServerRequest request) {
+    public Mono<ServerResponse> listenGetUserByEmail(ServerRequest request) {
         log.info("Inicio de la petición para obtener documento por correo");
 
         String correo = request.pathVariable("correo");
 
         return usuarioUseCase.findByEmail(correo)
                 .doOnNext(usuario -> log.info("Usuario encontrado: {}", usuario))
-                .map(Usuario::getDocumentoIdentidad)
-                .flatMap(documento -> ServerResponse.ok()
+                .flatMap(usuario -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(documento)
+                        .bodyValue(mapper.toResponse(usuario))
                 )
                 .switchIfEmpty(ServerResponse.notFound().build())
-                .doOnError(e -> log.error("Error al obtener documento por correo", e))
+                .doOnError(e -> log.error("Error al obtener usuario por correo", e))
                 .onErrorResume(ErrorHandler::handleError)
-                .doFinally(signal -> log.info("Fin de la petición para obtener documento por correo"));
+                .doFinally(signal -> log.info("Fin de la petición para obtener usuario por correo"));
     }
 
     public Mono<ServerResponse> login(ServerRequest request) {

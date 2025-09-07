@@ -59,7 +59,7 @@ public class RouterRest {
 
     @Bean
     public RouterFunction<ServerResponse> getUserByCorreo(Handler handler) {
-        return route(GET("/api/v1/usuarios/correo/{correo}"), handler::listenGetUserDocumentByEmail);
+        return route(GET("/api/v1/usuarios/correo/{correo}"), handler::listenGetUserByEmail);
     }
 
     @Bean
