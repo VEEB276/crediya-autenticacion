@@ -54,6 +54,16 @@ public class RouterRest {
             )
     )
     public RouterFunction<ServerResponse> getUserByDocument(Handler handler) {
-        return route(GET("/api/v1/usuarios/{documento}"), handler::listenGetUserByDocument);
+        return route(GET("/api/v1/usuarios/documento/{documento}"), handler::listenGetUserByDocument);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> getUserByCorreo(Handler handler) {
+        return route(GET("/api/v1/usuarios/correo/{correo}"), handler::listenGetUserByEmail);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> login(Handler handler) {
+        return route(POST("/api/v1/login"), handler::login);
     }
 }

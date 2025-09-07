@@ -20,6 +20,7 @@ public interface UserDtoMapper {
                 dto.correoElectronico(),
                 dto.salarioBase(),
                 dto.documentoIdentidad(),
+                dto.password(),
                 dto.idRol()
         );
     }

@@ -32,4 +32,9 @@ public class UsuarioUseCase {
                 .switchIfEmpty(Mono.error(new ValidationException("No existe usuario con el documento ingresado")));
     }
 
+    public Mono<Usuario> findByEmail(String correo) {
+        return usuarioRepository.findByCorreo(correo)
+                .switchIfEmpty(Mono.error(new ValidationException("No existe usuario con el correo ingresado")));
+    }
+
 }

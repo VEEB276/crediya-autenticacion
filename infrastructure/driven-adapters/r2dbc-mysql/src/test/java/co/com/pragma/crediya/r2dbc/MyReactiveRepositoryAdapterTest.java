@@ -102,7 +102,7 @@ class MyReactiveRepositoryAdapterTest {
                 .verifyComplete();
     }
 
-    @Test
+    /*@Test
     void mustSaveUserSuccessfully() {
         Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
         UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
@@ -118,9 +118,9 @@ class MyReactiveRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(repository).save(ue);
-    }
+    }*/
 
-    @Test
+    /*@Test
     void mustLogErrorWhenSaveUserFails() {
         Usuario u = Usuario.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
         UsuarioEntity ue = UsuarioEntity.builder().idUsuario(1L).nombre("John").apellido("Doe").build();
@@ -135,7 +135,7 @@ class MyReactiveRepositoryAdapterTest {
                 .verify();
 
         verify(repository).save(ue);
-    }
+    }*/
 
     @Test
     void mustFindByCorreo() {

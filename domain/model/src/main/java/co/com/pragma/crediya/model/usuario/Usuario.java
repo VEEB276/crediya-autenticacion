@@ -23,6 +23,7 @@ public class Usuario {
     private String correoElectronico;
     private BigDecimal salarioBase;
     private String documentoIdentidad;
+    private String password;
     private Long idRol;
 
 }

@@ -17,9 +17,10 @@ CREATE TABLE IF NOT EXISTS `${db}`.`usuarios` (
     `fecha_nacimiento` VARCHAR(20) NULL,
     `direccion` VARCHAR(200) NULL,
     `telefono` VARCHAR(50) NULL,
-    `correo_electronico` VARCHAR(150) NULL,
+    `correo_electronico` VARCHAR(150) UNIQUE NOT NULL,
     `salario_base` DECIMAL(15,2) NULL,
-    `documento_identidad` VARCHAR(50) NULL,
+    `documento_identidad` VARCHAR(50) UNIQUE NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
     `rol_id` BIGINT NULL,
     PRIMARY KEY (`id_usuario`),
     CONSTRAINT `fk_usuarios_roles` FOREIGN KEY (`rol_id`) REFERENCES `${db}`.`roles`(`rol_id`)
@@ -28,3 +29,11 @@ CREATE TABLE IF NOT EXISTS `${db}`.`usuarios` (
 
 -- Helpful index for FK
 CREATE INDEX `idx_usuarios_rol_id` ON `${db}`.`usuarios` (`rol_id`);
+
+-- Insert sample data into roles
+INSERT INTO `${db}`.`roles`
+(`nombre`, `descripcion`)
+VALUES
+    ('ADMIN', 'Administradora'),
+    ('ASESOR', 'Asesora'),
+    ('CLIENTE', 'Cliente');

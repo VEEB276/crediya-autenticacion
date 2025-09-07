@@ -5,6 +5,7 @@ import co.com.pragma.crediya.model.usuario.gateways.UsuarioRepository;
 import co.com.pragma.crediya.r2dbc.entities.UsuarioEntity;
 import co.com.pragma.crediya.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 import org.slf4j.Logger;
@@ -20,18 +21,22 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 {
     private static final Logger log = LoggerFactory.getLogger(MyReactiveRepositoryAdapter.class);
 
-    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
+    private final PasswordEncoder passwordEncoder;
+
+    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper, PasswordEncoder passwordEncoder) {
         /**
          *  Could be use mapper.mapBuilder if your domain model implement builder pattern
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
          *  Or using mapper.map with the class of the object model
          */
         super(repository, mapper, d -> mapper.map(d, Usuario.class));
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Mono<Usuario> saveUser(Usuario user) {
         log.info("Inicia guardado de usuario");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return super.save(user)
                 .doOnSuccess(saved -> log.info("Usuario guardado exitosamente con id: {}", saved.getIdUsuario()))
                 .doOnError(error -> log.error("Error guardando usuario: {}", error.getMessage(), error));

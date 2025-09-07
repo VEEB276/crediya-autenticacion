@@ -9,5 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class MainApplication {
     public static void main(String[] args) {
         SpringApplication.run(MainApplication.class, args);
+
+        /*PasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashedPassword = encoder.encode("123321");
+        System.out.println("Hashed password: " + hashedPassword);*/
     }
 }
