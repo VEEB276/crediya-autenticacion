@@ -37,3 +37,9 @@ VALUES
     ('ADMIN', 'Administradora'),
     ('ASESOR', 'Asesora'),
     ('CLIENTE', 'Cliente');
+
+-- Insert sample data into roles
+INSERT INTO `${db}`.`usuarios`
+(`nombre`, `apellido`, `fecha_nacimiento`, `direccion`, `telefono`, `correo_electronico`, `salario_base`, `documento_identidad`, `password`, `rol_id`)
+VALUES
+        ('Valentina', 'Escobar', '2001-06-27', 'Calle 22 #27', '3112233445', 'valentina.escobar@gmail.com', '15000000', '1005139317', '$2a$10$xXQH83bIM5wCzXskR9YT.uf5vMdhV1EBMfbEOMNozNlx7giNqyHe.', '1');
